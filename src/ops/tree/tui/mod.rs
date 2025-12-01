@@ -14,9 +14,11 @@ pub fn draw_tui(frame: &mut Frame, state: &mut TuiState) {
     let tree_widget = TreeWidget::new(&state.dependency_tree)
         .block(Block::bordered())
         .scrollbar(
-            Scrollbar::new(ScrollbarOrientation::VerticalRight)
-                .begin_symbol(Some("↑"))
-                .end_symbol(Some("↓")),
+            Scrollbar::new(ScrollbarOrientation::VerticalLeft)
+                .track_symbol(Some("┆"))
+                .thumb_symbol("▐")
+                .begin_symbol(Some("▴"))
+                .end_symbol(Some("▾")),
         );
     frame.render_stateful_widget(tree_widget, frame.area(), &mut state.tree_widget_state);
 }

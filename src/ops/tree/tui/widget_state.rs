@@ -174,19 +174,21 @@ impl TreeWidgetState {
             return;
         };
 
-        let Some(parent) = node.parent else {
-            return;
+        let siblings: &[NodeId] = if let Some(parent) = node.parent {
+            let Some(parent_node) = tree.node(parent) else {
+                return;
+            };
+            parent_node.children.as_slice()
+        } else {
+            tree.roots()
         };
-        let Some(parent_node) = tree.node(parent) else {
+
+        let Some(pos) = siblings.iter().position(|&id| id == selected) else {
             return;
         };
 
-        let Some(pos) = parent_node.children.iter().position(|&id| id == selected) else {
-            return;
-        };
-
-        if pos + 1 < parent_node.children.len() {
-            self.selected = Some(parent_node.children[pos + 1]);
+        if pos + 1 < siblings.len() {
+            self.selected = Some(siblings[pos + 1]);
         }
     }
 
@@ -199,19 +201,21 @@ impl TreeWidgetState {
             return;
         };
 
-        let Some(parent) = node.parent else {
-            return;
-        };
-        let Some(parent_node) = tree.node(parent) else {
-            return;
+        let siblings: &[NodeId] = if let Some(parent) = node.parent {
+            let Some(parent_node) = tree.node(parent) else {
+                return;
+            };
+            parent_node.children.as_slice()
+        } else {
+            tree.roots()
         };
 
-        let Some(pos) = parent_node.children.iter().position(|&id| id == selected) else {
+        let Some(pos) = siblings.iter().position(|&id| id == selected) else {
             return;
         };
 
         if pos > 0 {
-            self.selected = Some(parent_node.children[pos - 1]);
+            self.selected = Some(siblings[pos - 1]);
         }
     }
 

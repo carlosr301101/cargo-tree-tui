@@ -29,6 +29,11 @@ impl TuiState {
     }
 
     pub fn handle_key_event(&mut self, key_event: KeyEvent) {
+        if self.show_help {
+            // Close help popup on any key press
+            self.show_help = false;
+        }
+
         match (key_event.code, key_event.modifiers) {
             (KeyCode::Char('q'), _) => {
                 self.running = false;

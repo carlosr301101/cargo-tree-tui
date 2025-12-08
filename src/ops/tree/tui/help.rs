@@ -26,11 +26,11 @@ pub struct HelpPopupStyle {
 impl Default for HelpPopupStyle {
     fn default() -> Self {
         HelpPopupStyle {
-            border: Style::default().fg(ratatui::style::Color::Yellow),
+            border: Style::default().fg(Color::Yellow),
             title: Style::default()
                 .fg(Color::Magenta)
                 .add_modifier(Modifier::BOLD),
-            default: Style::default().fg(Color::White),
+            default: Style::default(),
         }
     }
 }

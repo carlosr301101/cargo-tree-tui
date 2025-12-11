@@ -395,10 +395,10 @@ impl TreeWidgetState {
 
             // Ensure paths are expanded for visibility
             for &id in show_set.iter() {
-                if let Some(n) = tree.node(id) {
-                    if !n.children.is_empty() {
-                        self.open.insert(id);
-                    }
+                if let Some(n) = tree.node(id)
+                    && !n.children.is_empty()
+                {
+                    self.open.insert(id);
                 }
             }
 
@@ -504,12 +504,11 @@ impl TreeWidgetState {
         // Collect matches in document order (nodes vector order approximates this)
         for i in 0..tree.nodes.len() {
             let id = NodeId(i);
-            if let Some(node) = tree.node(id) {
-                if matches_query(&node.name, &query)
-                    || matches_query(&format!("{} {}", node.name, node.version), &query)
-                {
-                    self.search_matches.push(id);
-                }
+            if let Some(node) = tree.node(id)
+                && (matches_query(&node.name, &query)
+                    || matches_query(&format!("{} {}", node.name, node.version), &query))
+            {
+                self.search_matches.push(id);
             }
         }
 

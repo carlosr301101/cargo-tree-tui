@@ -24,16 +24,20 @@ pub struct TreeWidget<'a> {
     block: Option<Block<'a>>,
     scrollbar: Option<Scrollbar<'a>>,
     style: TreeWidgetStyle,
+    search_active: bool,
+    search_results: &'a [crate::core::NodeId],
 }
 
 impl<'a> TreeWidget<'a> {
-    pub fn new(tree: &'a DependencyTree) -> Self {
+    pub fn new(tree: &'a DependencyTree, search_active: bool, search_results: &'a [crate::core::NodeId]) -> Self {
         Self {
             tree,
             root_label: None,
             block: None,
             scrollbar: None,
             style: TreeWidgetStyle::default(),
+            search_active,
+            search_results,
         }
     }
 
@@ -62,7 +66,15 @@ impl StatefulWidget for TreeWidget<'_> {
         }
 
         let block_ref = self.block.as_ref();
-        let mut ctx = RenderContext::new(self.tree, state, &self.style, self.root_label, block_ref);
+        let mut ctx = RenderContext::new(
+            self.tree, 
+            state, 
+            &self.style, 
+            self.root_label, 
+            block_ref,
+            self.search_active,
+            self.search_results,
+        );
 
         let RenderOutput {
             lines,

@@ -27,6 +27,8 @@ pub struct RenderContext<'a> {
     pub style: &'a TreeWidgetStyle,
     pub root_label: Option<&'a str>,
     pub block: Option<&'a Block<'a>>,
+    pub search_active: bool,
+    pub search_results: &'a [crate::core::NodeId],
 }
 
 impl<'a> RenderContext<'a> {
@@ -36,6 +38,8 @@ impl<'a> RenderContext<'a> {
         style: &'a TreeWidgetStyle,
         root_label: Option<&'a str>,
         block: Option<&'a Block<'a>>,
+        search_active: bool,
+        search_results: &'a [crate::core::NodeId],
     ) -> Self {
         Self {
             tree,
@@ -43,6 +47,8 @@ impl<'a> RenderContext<'a> {
             style,
             root_label,
             block,
+            search_active,
+            search_results,
         }
     }
 
@@ -146,8 +152,14 @@ impl<'a> RenderContext<'a> {
             ));
         }
 
+        let is_search_result = self.search_active && 
+            self.search_results.contains(&node.id);
+        
         let name_style = if lineage.is_selected {
             self.style.highlight_style
+        } else if is_search_result {
+            // Use a different style for search matches that are not currently selected
+            self.style.highlight_style.bg(ratatui::style::Color::Blue)
         } else {
             self.style.name_style
         };

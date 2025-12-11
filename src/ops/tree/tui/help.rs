@@ -7,7 +7,9 @@ use ratatui::{
 };
 
 const KEY_BINDINGS: &str = r#"
- ?   Show this popup 
+ ?   Show this popup
+ /   Enter search mode
+ .   Exit search mode 
  ←   Collapse selected
  →   Expand selected
  [   Go to previous sibling

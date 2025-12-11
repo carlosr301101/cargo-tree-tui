@@ -37,6 +37,46 @@ impl TuiState {
             return;
         }
 
+        // If search is active, block all other commands except ESC and '/'
+        if self.tree_widget_state.search_active {
+            match key_event.code {
+                KeyCode::Char('.') => {
+                    // Toggle off search mode with '/'
+                    self.tree_widget_state.cancel_search(true);
+                }
+                KeyCode::Esc => {
+                    // Cancel and restore previous selection
+                    self.tree_widget_state.cancel_search(true);
+                }
+                KeyCode::Backspace => {
+                    let mut q = self.tree_widget_state.search_query.clone();
+                    q.pop();
+                    self.tree_widget_state
+                        .set_search_query(&self.dependency_tree, q);
+                }
+                KeyCode::Enter => {
+                    self.tree_widget_state.commit_search();
+                }
+                KeyCode::Down => {
+                    self.tree_widget_state.next_match();
+                }
+                KeyCode::Up => {
+                    self.tree_widget_state.previous_match();
+                }
+                KeyCode::Char(ch) => {
+                    // Only add typed characters to search query
+                    let mut q = self.tree_widget_state.search_query.clone();
+                    q.push(ch);
+                    self.tree_widget_state
+                        .set_search_query(&self.dependency_tree, q);
+                }
+                _ => {
+                    // Ignore all other keys during search
+                }
+            }
+            return; // Early return: don't process other commands
+        }
+
         match key_event.code {
             KeyCode::Char('q') => {
                 self.running = false;
@@ -66,45 +106,21 @@ impl TuiState {
                     self.tree_widget_state.cancel_search(false);
                 }
             }
-            KeyCode::Char(ch) => {
-                if self.tree_widget_state.search_active {
-                    let mut q = self.tree_widget_state.search_query.clone();
-                    q.push(ch);
-                    self.tree_widget_state
-                        .set_search_query(&self.dependency_tree, q);
-                }
-            }
-            KeyCode::Backspace => {
-                if self.tree_widget_state.search_active {
-                    let mut q = self.tree_widget_state.search_query.clone();
-                    q.pop();
-                    self.tree_widget_state
-                        .set_search_query(&self.dependency_tree, q);
-                }
-            }
-            KeyCode::Enter => {
-                if self.tree_widget_state.search_active {
-                    self.tree_widget_state.commit_search();
-                }
-            }
             KeyCode::Esc => {
-                if self.tree_widget_state.search_active {
-                    // Cancel and restore previous selection
-                    self.tree_widget_state.cancel_search(true);
-                } else if self.tree_widget_state.search_persist {
-                    // Clear persisted highlights without restoring
+                // Clear persisted highlights without restoring
+                if self.tree_widget_state.search_persist {
                     self.tree_widget_state.cancel_search(false);
                 }
             }
             KeyCode::Down => {
-                if self.tree_widget_state.search_active || self.tree_widget_state.search_persist {
+                if self.tree_widget_state.search_persist {
                     self.tree_widget_state.next_match();
                 } else {
                     self.tree_widget_state.select_next(&self.dependency_tree);
                 }
             }
             KeyCode::Up => {
-                if self.tree_widget_state.search_active || self.tree_widget_state.search_persist {
+                if self.tree_widget_state.search_persist {
                     self.tree_widget_state.previous_match();
                 } else {
                     self.tree_widget_state

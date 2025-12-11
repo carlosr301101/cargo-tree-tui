@@ -57,7 +57,8 @@ impl TuiState {
             }
             KeyCode::Char('/') => {
                 // Start live search. Query starts empty and user types to filter.
-                self.tree_widget_state.set_search_query(&self.dependency_tree, String::new());
+                self.tree_widget_state
+                    .set_search_query(&self.dependency_tree, String::new());
             }
             KeyCode::Char('c') => {
                 // Clear persisted highlights
@@ -69,14 +70,16 @@ impl TuiState {
                 if self.tree_widget_state.search_active {
                     let mut q = self.tree_widget_state.search_query.clone();
                     q.push(ch);
-                    self.tree_widget_state.set_search_query(&self.dependency_tree, q);
+                    self.tree_widget_state
+                        .set_search_query(&self.dependency_tree, q);
                 }
             }
             KeyCode::Backspace => {
                 if self.tree_widget_state.search_active {
                     let mut q = self.tree_widget_state.search_query.clone();
                     q.pop();
-                    self.tree_widget_state.set_search_query(&self.dependency_tree, q);
+                    self.tree_widget_state
+                        .set_search_query(&self.dependency_tree, q);
                 }
             }
             KeyCode::Enter => {
@@ -104,7 +107,8 @@ impl TuiState {
                 if self.tree_widget_state.search_active || self.tree_widget_state.search_persist {
                     self.tree_widget_state.previous_match();
                 } else {
-                    self.tree_widget_state.select_previous(&self.dependency_tree);
+                    self.tree_widget_state
+                        .select_previous(&self.dependency_tree);
                 }
             }
             KeyCode::PageDown => {

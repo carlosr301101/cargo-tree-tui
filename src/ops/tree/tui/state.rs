@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use crossterm::event::{KeyCode, KeyEvent};
+use crossterm::event::{KeyCode, KeyEvent, KeyEventKind};
 
 use crate::core::DependencyTree;
 
@@ -33,8 +33,12 @@ impl TuiState {
             // Close help popup on any key press
             self.show_help = false;
         }
+        if key_event.kind != KeyEventKind::Press {
+            return;
+        }
 
         match (key_event.code, key_event.modifiers) {
+            
             (KeyCode::Char('q'), _) => {
                 self.running = false;
             }

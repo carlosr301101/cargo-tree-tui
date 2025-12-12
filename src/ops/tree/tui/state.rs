@@ -33,7 +33,7 @@ impl TuiState {
             // Close help popup on any key press
             self.show_help = false;
         }
-        if key_event.kind != KeyEventKind::Press {
+        if key_event.kind != KeyEventKind::Press && key_event.modifiers.is_empty() {
             return;
         }
 
